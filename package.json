@@ -4,6 +4,7 @@
     "description": "Syntax highlighting for DBML Language",
     "version": "0.0.1",
     "publisher": "duynvu",
+    "repository": "https://github.com/duynvu/DBML-Highlighter.git",
     "engines": {
         "vscode": "^1.38.0"
     },
