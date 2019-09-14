@@ -1,0 +1,195 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "DBML",
+	"patterns": [
+		{
+			"match": "(\\{|\\})",
+			"name": "punctuation.separator.label.js"
+		},
+		{
+			"captures": {
+				"1": {
+					"name": "constant.other.database-name.sql"
+				},
+				"2": {
+					"name": "constant.other.table-name.sql"
+				}
+			},
+			"match": "(\\w+?)\\.(\\w+)"
+		},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#constants"
+		},
+		{
+			"include": "#comments"
+		},
+		{
+			"captures": {
+				"1": {
+					"name": "punctuation.definition.string.begin.sql"
+				},
+				"3": {
+					"name": "punctuation.definition.string.end.sql"
+				}
+			},
+			"match": "(#\\{)([^\\}]*)(\\})",
+			"name": "string.interpolated.sql"
+		},
+		{
+			"include": "#strings"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [
+				{
+				"name": "keyword.control.dbml",
+				"match": "\\b(?i)(table|ref|enum|indexes)\\b"
+				},
+				{
+					"match": "(<|>|-)",
+					"name": "keyword.operator"
+				},
+				{
+					"match": "(?i)\\bAS\\b",
+					"name": "keyword.other.alias.sql"
+				},		
+				{
+					"match": "\\b(?i)(primary|key|pk|not|null|unique|default)\\b",
+					"name": "keyword.other"
+				}
+			]
+		},
+		"strings": {
+			"patterns": [
+				{
+					"captures": {
+						"1": {
+							"name": "punctuation.definition.string.begin.sql"
+						},
+						"2": {
+							"name": "punctuation.definition.string.end.sql"
+						}
+					},
+					"comment": "this is faster than the next begin/end rule since sub-pattern will match till end-of-line and SQL files tend to have very long lines.",
+					"match": "(`)[^`\\\\]*(`)",
+					"name": "string.interpolated"
+				},
+				{
+					"name": "string.quoted.single.dbml",
+					"begin": "'",
+					"end": "'",
+					"patterns": [
+						{
+							"name": "constant.character.escape.dbml",
+							"match": "\\\\."
+						}
+					]
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "punctuation.definition.string.begin.sql"
+						},
+						"2": {
+							"name": "punctuation.definition.string.end.sql"
+						}
+					},
+					"match": "(\")[^\"#]*(\")",
+					"name": "variable"
+				}
+			]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"begin": "(^[ \\t]+)?(?=//)",
+					"beginCaptures": {
+						"1": {
+							"name": "punctuation.whitespace.comment.leading.sql"
+						}
+					},
+					"end": "(?!\\G)",
+					"patterns": [
+						{
+							"begin": "//",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.definition.comment.sql"
+								}
+							},
+							"end": "\\n",
+							"name": "comment.line.double-slash.sql"
+						}
+					]
+				}
+			]
+		},
+		"constants": {
+			"patterns": [
+				{
+					"match": "\\b(?i)(true|false)\\b",
+					"name": "constant.language"
+				},
+		{
+			"captures": {
+				"1": {
+					"name": "storage.type.sql"
+				},
+				"2": {
+					"name": "storage.type.sql"
+				},
+				"3": {
+					"name": "constant.numeric.sql"
+				},
+				"4": {
+					"name": "storage.type.sql"
+				},
+				"5": {
+					"name": "constant.numeric.sql"
+				},
+				"6": {
+					"name": "storage.type.sql"
+				},
+				"7": {
+					"name": "constant.numeric.sql"
+				},
+				"8": {
+					"name": "constant.numeric.sql"
+				},
+				"9": {
+					"name": "storage.type.sql"
+				},
+				"10": {
+					"name": "constant.numeric.sql"
+				},
+				"11": {
+					"name": "storage.type.sql"
+				},
+				"12": {
+					"name": "storage.type.sql"
+				},
+				"13": {
+					"name": "storage.type.sql"
+				},
+				"14": {
+					"name": "constant.numeric.sql"
+				},
+				"15": {
+					"name": "storage.type.sql"
+				}
+			},
+			"match": "(?xi)\n\n\t\t\t\t# normal stuff, capture 1\n\t\t\t\t \\b(bigint|bigserial|bit|boolean|box|bytea|character\\s(?:varying)?|cidr|circle|date|double\\sprecision|inet|int|integer|line|lseg|macaddr|money|oid|path|point|polygon|uuid|real|serial|smallint|sysdate|text)\\b\n\n\t\t\t\t# numeric suffix, capture 2 + 3i\n\t\t\t\t|\\b(bit\\svarying|character\\s(?:varying)?|tinyint|var\\schar|float|interval)\\((\\d+)\\)\n\n\t\t\t\t# optional numeric suffix, capture 4 + 5i\n\t\t\t\t|\\b(char|number|varchar\\d?)\\b(?:\\((\\d+)\\))?\n\n\t\t\t\t# special case, capture 6 + 7i + 8i\n\t\t\t\t|\\b(numeric|decimal)\\b(?:\\((\\d+),(\\d+)\\))?\n\n\t\t\t\t# special case, captures 9, 10i, 11\n\t\t\t\t|\\b(times?)\\b(?:\\((\\d+)\\))?(\\swith(?:out)?\\stime\\szone\\b)?\n\n\t\t\t\t# special case, captures 12, 13, 14i, 15\n\t\t\t\t|\\b(timestamp)(?:(s|tz))?\\b(?:\\((\\d+)\\))?(\\s(with|without)\\stime\\szone\\b)?\n\n\t\t\t"
+		},
+				{
+					"match": "\\b\\d+\\b",
+					"name": "constant.numeric.sql"
+				}		
+			]
+		}
+	},
+	"scopeName": "source.dbml"
+}
